@@ -1,0 +1,148 @@
+:root {
+  --brand-orange: #f15a24;
+  --brand-orange-dark: #d9480f;
+  --brand-orange-soft: rgba(241, 90, 36, 0.15);
+  
+  /* Override any blue references */
+  --primary-blue: #3b82f6;
+  --primary-blue-dark: #2563eb;
+  --primary-purple: #8b5cf6;
+  --primary-indigo: #6366f1;
+}
+// AtDrive ATS - Global Styles
+@import './styles/variables';
+@import './styles/mixins';
+@import './styles/typography';
+@import './styles/utilities';
+@import './styles/animations';
+
+// Reset and base styles
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: $background-light;
+  font-family: $font-family-base;
+  transition: background-color $transition-normal, color $transition-normal;
+}
+
+// Scrollbar styling
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: $border-radius-full;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: $border-radius-full;
+  
+  &:hover {
+    background: #94a3b8;
+  }
+}
+
+// Focus styles for accessibility
+*:focus {
+  outline: 2px solid $primary;
+  outline-offset: 2px;
+}
+
+*:focus:not(:focus-visible) {
+  outline: none;
+}
+
+*:focus-visible {
+  outline: 2px solid $primary;
+  outline-offset: 2px;
+}
+
+// Global smooth transitions
+* {
+  transition: background-color 0.2s ease,
+              color 0.2s ease,
+              box-shadow 0.2s ease,
+              transform 0.2s ease;
+}
+
+// Hover effects for interactive elements
+button, .btn, .nav-item, .card {
+  &:hover {
+    transform: translateY(-2px);
+  }
+  
+  &:active {
+    transform: scale(0.97);
+  }
+}
+
+// Global animation controls
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+/* Global smoothness */
+* {
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+/* Buttons feel clickable */
+button:active {
+  transform: scale(0.97);
+}
+
+/* Cards lift */
+.card,
+.settings-card,
+.kpi-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover,
+.settings-card:hover,
+.kpi-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.08);
+}
+.btn-primary {
+  background: linear-gradient(135deg, #f15a24, #ff7a45);
+  color: #ffffff;
+  border: none;
+}
+
+.btn-primary:hover {
+  box-shadow: 0 6px 20px rgba(241, 90, 36, 0.4);
+  transform: translateY(-1px);
+}
+
+.btn-primary:active {
+  transform: scale(0.97);
+}
+.btn-primary:active {
+  transform: scale(0.97);
+  box-shadow: 0 4px 8px rgba(241, 90, 36, 0.3);
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: #f15a24;
+  box-shadow: 0 0 0 2px rgba(241, 90, 36, 0.2);
+}

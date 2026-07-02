@@ -1,0 +1,168 @@
+// Typography styles for AtDrive ATS
+
+// Base typography
+body {
+  font-family: $font-family-base;
+  font-size: $font-body;
+  line-height: 1.5;
+  color: $text-primary;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+// Heading styles
+h1 {
+  @include font-h1;
+  color: $text-primary;
+  margin: 0 0 $spacing-md 0;
+}
+
+h2 {
+  @include font-h2;
+  color: $text-primary;
+  margin: 0 0 $spacing-md 0;
+}
+
+h3 {
+  @include font-h3;
+  color: $text-primary;
+  margin: 0 0 $spacing-sm 0;
+}
+
+// Text styles
+.text-display {
+  @include font-display;
+}
+
+.text-h1 {
+  @include font-h1;
+}
+
+.text-h2 {
+  @include font-h2;
+}
+
+.text-h3 {
+  @include font-h3;
+}
+
+.text-body {
+  @include font-body;
+}
+
+.text-caption {
+  @include font-caption;
+  color: $text-secondary;
+}
+
+// Text variations
+.text-primary {
+  color: $text-primary;
+}
+
+.text-secondary {
+  color: $text-secondary;
+}
+
+.text-success {
+  color: $success;
+}
+
+.text-warning {
+  color: $warning;
+}
+
+.text-error {
+  color: $error;
+}
+
+.text-muted {
+  color: $text-tertiary;
+}
+
+// Weight classes
+.font-light {
+  font-weight: 300;
+}
+
+.font-normal {
+  font-weight: 400;
+}
+
+.font-medium {
+  font-weight: 500;
+}
+
+.font-semibold {
+  font-weight: 600;
+}
+
+.font-bold {
+  font-weight: 700;
+}
+
+.font-extrabold {
+  font-weight: 800;
+}
+
+// Alignment
+.text-left {
+  text-align: left;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.text-justify {
+  text-align: justify;
+}
+
+// Transformation
+.text-lowercase {
+  text-transform: lowercase;
+}
+
+.text-uppercase {
+  text-transform: uppercase;
+}
+
+.text-capitalize {
+  text-transform: capitalize;
+}
+
+// Line height
+.leading-tight {
+  line-height: 1.25;
+}
+
+.leading-snug {
+  line-height: 1.375;
+}
+
+.leading-normal {
+  line-height: 1.5;
+}
+
+.leading-relaxed {
+  line-height: 1.625;
+}
+
+// Letter spacing
+.tracking-tight {
+  letter-spacing: -0.025em;
+}
+
+.tracking-normal {
+  letter-spacing: 0;
+}
+
+.tracking-wide {
+  letter-spacing: 0.025em;
+}

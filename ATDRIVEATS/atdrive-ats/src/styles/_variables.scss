@@ -1,0 +1,72 @@
+// AtDrive ATS Design Variables
+// Color Palette
+$primary: #f15a24;        // AtDrive Orange
+$primary-light: #ff7a45;  // Light Orange
+$primary-dark: #d9480f;   // Dark Orange
+$secondary: #f15a24;      // Vibrant Orange
+$secondary-light: #ff7a45; // Light Orange
+$success: #10b981;        // Green for positive
+$success-light: #34d399;  // Light green
+$warning: #f59e0b;        // Amber for warnings
+$error: #ef4444;          // Red for errors
+$info: #f15a24;           // Info Orange
+
+$background-dark: #0f172a; // Dark slate
+$background-light: #f8fafc; // Light gray
+$background-card: #ffffff; // Solid white for professional look
+$text-primary: #1e293b;   // Dark text for better contrast
+$text-secondary: #94a3b8; // Muted text
+$text-tertiary: #64748b;  // Tertiary text
+$text-on-primary: #ffffff; // Text on primary background
+
+// Background Gradients
+$gradient-primary: linear-gradient(135deg, $primary 0%, $secondary 100%);
+$gradient-auth: linear-gradient(135deg, $background-dark 0%, #1e293b 50%, #0f172a 100%);
+
+// Typography
+$font-family-base: 'Inter', 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+
+// Font Sizes
+$font-display: 48px;
+$font-h1: 36px;
+$font-h2: 24px;
+$font-h3: 20px;
+$font-body: 16px;
+$font-caption: 14px;
+$font-small: 12px;
+
+// Spacing System (8px Grid)
+$spacing-xs: 4px;
+$spacing-sm: 8px;
+$spacing-md: 16px;
+$spacing-lg: 24px;
+$spacing-xl: 32px;
+$spacing-xxl: 48px;
+$spacing-xxxl: 64px;
+
+// Border Radius
+$border-radius-sm: 4px;
+$border-radius-md: 8px;
+$border-radius-lg: 12px;
+$border-radius-xl: 16px;
+$border-radius-full: 9999px;
+
+// Shadows
+$shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+$shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+$shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+$shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+$shadow-inset: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
+
+// Transitions
+$transition-fast: 0.15s ease;
+$transition-normal: 0.25s ease;
+$transition-slow: 0.35s ease;
+
+// Breakpoints
+$breakpoint-xs: 0;
+$breakpoint-sm: 576px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 992px;
+$breakpoint-xl: 1200px;
+$breakpoint-xxl: 1400px;
