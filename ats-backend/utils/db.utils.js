@@ -1,36 +1,52 @@
-const { Sequelize } = require('sequelize');
+const { Sequelize } = require("sequelize");
+const fs = require("fs");
 
 let sequelize;
 
-// Initialize database - tries MySQL only if password is provided
 async function initDatabase() {
-    const hasMysqlPassword = process.env.DB_PASSWORD && process.env.DB_PASSWORD.trim().length > 0;
-    
-    console.log(`📊 Database init:`, hasMysqlPassword ? 'MySQL configured' : 'SQLite (no MySQL password)');
-    
-    if (hasMysqlPassword) {
+    const hasMysqlConfig =
+        process.env.DB_HOST &&
+        process.env.DB_USER &&
+        process.env.DB_NAME &&
+        process.env.DB_PASSWORD;
+
+    console.log("==========================================");
+    console.log("📦 Initializing Database...");
+    console.log(`Environment : ${process.env.NODE_ENV || "development"}`);
+
+    if (hasMysqlConfig) {
         try {
+            console.log("🔄 Connecting to MySQL...");
+
             sequelize = new Sequelize(
-                process.env.DB_NAME || 'ats_db',
-                process.env.DB_USER || 'root',
-                process.env.DB_PASSWORD || '',
+                process.env.DB_NAME,
+                process.env.DB_USER,
+                process.env.DB_PASSWORD,
                 {
-                    host: process.env.DB_HOST || 'localhost',
-                    dialect: 'mysql',
-                    port: process.env.DB_PORT || 3306,
+                    host: process.env.DB_HOST,
+                    port: Number(process.env.DB_PORT) || 3306,
+                    dialect: "mysql",
+
                     logging: false,
+
                     pool: {
-                        max: 5,
+                        max: 10,
                         min: 0,
                         acquire: 30000,
                         idle: 10000
                     },
+
                     define: {
-                        charset: 'utf8mb4',
-                        collate: 'utf8mb4_unicode_ci',
+                        charset: "utf8mb4",
+                        collate: "utf8mb4_unicode_ci",
                         timestamps: true
                     },
+
                     dialectOptions: {
+                        ssl: {
+                            require: true,
+                            rejectUnauthorized: false
+                        },
                         dateStrings: true,
                         typeCast: true
                     }
@@ -38,57 +54,84 @@ async function initDatabase() {
             );
 
             await sequelize.authenticate();
-            console.log('✅ Connected to MySQL database');
-            
+
+            console.log("✅ Connected to MySQL successfully");
+
             await sequelize.sync({ alter: true });
-            console.log('✅ Database synchronized');
-            
+
+            console.log("✅ Database synchronized");
+            console.log("==========================================");
+
             return sequelize;
-        } catch (mysqlError) {
-            console.error('❌ MySQL connection failed:', mysqlError.message);
-            console.log('⚠️  Falling back to SQLite...');
+
+        } catch (error) {
+
+            console.error("❌ MySQL Connection Failed");
+            console.error(error.message);
+
+            if (process.env.NODE_ENV === "production") {
+                throw error;
+            }
+
+            console.log("⚠️ Falling back to SQLite (Development Mode)");
         }
     }
-    
-    // Use SQLite - no MySQL password provided or MySQL failed
-    const fs = require('fs');
-    const dataDir = './data';
-    if (!fs.existsSync(dataDir)){
-        fs.mkdirSync(dataDir);
+
+    // ----------------------------
+    // SQLite (Development only)
+    // ----------------------------
+
+    if (!fs.existsSync("./data")) {
+        fs.mkdirSync("./data");
     }
 
     sequelize = new Sequelize({
-        dialect: 'sqlite',
-        storage: './data/ats.db',
+        dialect: "sqlite",
+        storage: "./data/ats.db",
+
         logging: false,
+
         pool: {
             max: 5,
             min: 0,
             acquire: 30000,
             idle: 10000
         },
+
         define: {
             timestamps: true
         }
     });
 
     await sequelize.authenticate();
-    console.log('✅ Connected to SQLite database');
-    
-    await sequelize.sync({ force: false, alter: true });
-    console.log('✅ SQLite database synchronized');
-    
+
+    console.log("✅ SQLite Connected");
+
+    await sequelize.sync({ alter: true });
+
+    console.log("✅ SQLite Database Ready");
+    console.log("==========================================");
+
     return sequelize;
 }
 
 function getDb() {
     if (!sequelize) {
-        throw new Error('Database not initialized. Call initDatabase() first.');
+        throw new Error("Database not initialized. Call initDatabase() first.");
     }
+
     return sequelize;
+}
+
+async function closeDatabase() {
+    if (sequelize) {
+        await sequelize.close();
+        console.log("✅ Database connection closed");
+    }
 }
 
 module.exports = {
     initDatabase,
-    getDb
+    getDb,
+    closeDatabase
 };
