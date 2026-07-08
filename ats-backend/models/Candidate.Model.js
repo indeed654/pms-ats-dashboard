@@ -1,100 +1,147 @@
 const { DataTypes } = require('sequelize');
 const { getDb } = require('../utils/db.utils');
 
-// Get the database instance
+// Get initialized sequelize instance
 const sequelize = getDb();
 
-const Candidate = sequelize.define('Candidate', {
+const Candidate = sequelize.define(
+  'Candidate',
+  {
     id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true
     },
+
     name: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        validate: {
-            len: [2, 100]
-        }
+      type: DataTypes.STRING(100),
+      allowNull: false,
+      validate: {
+        len: [2, 100]
+      }
     },
+
     email: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: true,
-        validate: {
-            isEmail: true
-        }
+      type: DataTypes.STRING(150),
+      allowNull: false,
+      unique: true,
+      validate: {
+        isEmail: true
+      }
     },
+
     phone: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        validate: {
-            is: [/^[\+]?[1-9][\d]{0,15}$/, 'Please enter a valid phone number']
-        }
+      type: DataTypes.STRING(20),
+      allowNull: false
     },
+
     skills: {
-        type: DataTypes.JSON, // Store as JSON array
-        allowNull: false
+      type: DataTypes.JSON,
+      allowNull: false,
+      defaultValue: []
     },
+
     experience: {
-        type: DataTypes.INTEGER,
-        defaultValue: 0,
-        validate: {
-            min: 0,
-            max: 50
-        }
+      type: DataTypes.INTEGER,
+      defaultValue: 0
     },
+
     status: {
-        type: DataTypes.ENUM('applied', 'shortlisted', 'interview', 'hired', 'rejected'),
-        allowNull: false,
-        defaultValue: 'applied'
+      type: DataTypes.ENUM(
+        'applied',
+        'shortlisted',
+        'interview',
+        'hired',
+        'rejected'
+      ),
+      defaultValue: 'applied'
     },
+
     appliedDate: {
-        type: DataTypes.DATE,
-        defaultValue: DataTypes.NOW
+      type: DataTypes.DATE,
+      defaultValue: DataTypes.NOW
     },
+
     source: {
-        type: DataTypes.ENUM('linkedin', 'referral', 'career_page', 'job_board'),
-        defaultValue: 'career_page'
+      type: DataTypes.ENUM(
+        'linkedin',
+        'referral',
+        'career_page',
+        'job_board'
+      ),
+      defaultValue: 'career_page'
     },
+
     resumeUrl: {
-        type: DataTypes.STRING,
-        validate: {
-            is: [/^https?:\/\/.+\.(pdf|doc|docx)$/i, 'Resume must be a PDF or DOC file']
-        }
+      type: DataTypes.STRING,
+      allowNull: true
     },
-    coverLetter: DataTypes.TEXT,
-    portfolioUrl: DataTypes.STRING,
-    linkedinUrl: DataTypes.STRING,
-    githubUrl: DataTypes.STRING,
+
+    coverLetter: {
+      type: DataTypes.TEXT,
+      allowNull: true
+    },
+
+    portfolioUrl: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+
+    linkedinUrl: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+
+    githubUrl: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+
     appliedJobs: {
-        type: DataTypes.JSON // Store as JSON array of job applications
+      type: DataTypes.JSON,
+      defaultValue: []
     },
-    notes: DataTypes.TEXT,
+
+    notes: {
+      type: DataTypes.TEXT,
+      allowNull: true
+    },
+
+    // ✅ FIXED
     createdBy: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: 'users',
-            key: 'id'
-        }
+      type: DataTypes.STRING,
+      allowNull: false,
+      references: {
+        model: 'users',
+        key: 'id'
+      },
+      onUpdate: 'CASCADE',
+      onDelete: 'RESTRICT'
     },
+
+    // ✅ FIXED
     updatedBy: {
-        type: DataTypes.INTEGER,
-        references: {
-            model: 'users',
-            key: 'id'
-        }
+      type: DataTypes.STRING,
+      allowNull: true,
+      references: {
+        model: 'users',
+        key: 'id'
+      },
+      onUpdate: 'CASCADE',
+      onDelete: 'SET NULL'
     },
+
     isDeleted: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: false
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
     }
-}, {
+  },
+  {
     tableName: 'candidates',
-    timestamps: true, // Handles createdAt and updatedAt
-    paranoid: true, // Enables soft deletes
+    timestamps: true,
+    paranoid: true,
     underscored: true
-});
+  }
+);
 
 module.exports = Candidate;
