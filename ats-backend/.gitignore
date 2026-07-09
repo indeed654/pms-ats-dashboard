@@ -4,6 +4,8 @@ node_modules/
 config/config.env
 logs/
 *.log
+data/
+*.db
 .DS_Store
 coverage/
 dist/
