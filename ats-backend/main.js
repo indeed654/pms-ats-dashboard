@@ -126,12 +126,7 @@ async function startServer() {
     app.use("/api/aijd", aijdRoutes);
     app.use("/api/document", documentRoutes);
     app.use("/api/dashboard", dashboardRoutes);
-
-    // Error handling middleware
-    const { errorHandler, notFoundHandler } = require("./middleware/error.middleware");
-    app.use(notFoundHandler);
-    app.use(errorHandler);
-
+    
     // Health check endpoint
     app.get("/health", (req, res) => {
         res.status(200).json({
@@ -142,6 +137,11 @@ async function startServer() {
             database: dbInitialized ? "connected" : "disconnected"
         });
     });
+
+    / Error handling middleware
+    const { errorHandler, notFoundHandler } = require("./middleware/error.middleware");
+    app.use(notFoundHandler);
+    app.use(errorHandler);
 
     // Seed default users if using SQLite (only in development)
     if (dbInitialized && !process.env.DB_PASSWORD) {
