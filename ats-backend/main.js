@@ -29,9 +29,12 @@ let dbInitialized = false;
 async function startServer() {
     try {
         const { initDatabase, getDb } = require('./utils/db.utils');
+        console.log('🧪 [startup] calling initDatabase()');
         const sequelize = await initDatabase();
         dbInitialized = true;
+        console.log('🧪 [startup] initDatabase() resolved');
         console.log('✅ Database initialized successfully');
+
         
         // Initialize User model AFTER database is ready
         const { initUserModel } = require('./models/User.Model');
@@ -80,29 +83,37 @@ async function startServer() {
         console.log('==========================================');
         
     } catch (error) {
-    console.error("====================================");
-    console.error("❌ DATABASE INITIALIZATION FAILED");
-    console.error(error);
+        console.error("====================================");
+        console.error("❌ DATABASE INITIALIZATION FAILED");
+        console.error("name:", error && error.name);
+        console.error("message:", error && error.message);
+        console.error("stack:", error && error.stack);
+        console.error("parent:", error && error.parent);
+        console.error("original:", error && error.original);
 
-    if (error.errors) {
-        console.error("Validation Errors:");
+        if (error && error.errors) {
+            console.error("Validation errors:");
+            error.errors.forEach((e) => console.error(e));
+        }
 
-        error.errors.forEach((e) => {
-            console.error({
-                message: e.message,
-                path: e.path,
-                value: e.value,
-                validator: e.validatorKey,
-                type: e.type
-            });
-        });
+        if (error && error.parent) {
+            console.error("SQL (if present):", error.parent.sql);
+            if (error.parent.code) console.error("SQL error code:", error.parent.code);
+        }
+
+        if (error && error.violations) {
+            console.error("Constraint/violations:", error.violations);
+        }
+
+        console.error("====================================");
+        // Do not swallow startup errors.
+        throw error;
     }
 
-    console.error("====================================");
-    console.log("⚠️ Server starting without database connection.");
-}
+    console.log("🧪 [startup] passed init+models section, configuring middleware/routes");
 
     // Security middleware
+
     app.use(helmet());
 
     // Rate limiting
