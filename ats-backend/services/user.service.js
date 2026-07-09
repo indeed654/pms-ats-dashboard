@@ -1,3 +1,4 @@
+const { randomUUID } = require("crypto");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
@@ -15,7 +16,7 @@ class UserService {
     // User registration
     async register(userData) {
         try {
-            const { id, name, email, password, role, createdAt } = userData;
+            const { name, email, password, role } = userData;
             const User = this.getUserModel();
             
             // Check if user already exists
@@ -30,13 +31,12 @@ class UserService {
             const hashedPassword = await bcrypt.hash(password, 10);
             
             // Create new user
-            const newUser = await User.create({ 
-                id, 
-                name, 
-                email, 
-                password: hashedPassword, 
-                role, 
-                createdAt 
+            const newUser = await User.create({
+              id: randomUUID(),
+              name,
+              email,
+              password: hashedPassword,
+              role
             });
             
             // Log activity
@@ -65,23 +65,50 @@ class UserService {
     
     // User login
     async login(email, password) {
-        try {
-            const User = this.getUserModel();
-            
-            // Find user by email
-            const user = await User.findOne({ 
-                where: { email, isDeleted: false }
-            });
-            if (!user) {
-                throw new Error("Invalid email or password");
+       const User = this.getUserModel();
+
+       console.log("========== LOGIN DEBUG ==========");
+       console.log("Email:", email);
+
+       const user = await User.findOne({
+           where: {
+              email,
+              isDeleted: false
             }
-            
-            // Verify password
-            const isValidPassword = await bcrypt.compare(password, user.password);
-            if (!isValidPassword) {
-                throw new Error("Invalid email or password");
-            }
-            
+    });
+
+    console.log("User found:", !!user);
+
+    if (!user) {
+        throw new Error("Invalid email or password");
+    }
+
+    console.log("Stored hash:", user.password);
+
+    const isValidPassword = await bcrypt.compare(password, user.password);
+
+    console.log("Password valid:", isValidPassword);
+
+    if (!isValidPassword) {
+        throw new Error("Invalid email or password");
+    }
+
+    const token = jwt.sign(
+        {
+            userId: user.id.toString(),
+            email: user.email,
+            name: user.name,
+            role: user.role
+        },
+        process.env.JWT_SECRET,
+        { expiresIn: "1d" }
+    );
+
+    return {
+        token,
+        user
+    };
+}
             // Generate JWT token
             const token = jwt.sign(
                 { 
