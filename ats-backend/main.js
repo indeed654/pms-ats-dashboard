@@ -42,14 +42,36 @@ async function startServer() {
         const { initActivityLogModel } = require('./models/ActivityLog.Model');
         initActivityLogModel(sequelize);
         console.log('✅ ActivityLog model initialized');
+
+        // Initialize other models using their exported init<Model>(sequelize) function
+
         
-        // Initialize other models
-        require('./models/Candidate.Model');
+        // Initialize every model using its exported init<Model>(sequelize) function
+        const { initCandidateModel } = require('./models/Candidate.Model');
+        initCandidateModel(sequelize);
+        console.log('✅ Candidate model initialized');
+
+        // Job/Interview/Document/AI-JD models currently do not export init* functions.
+        // Keep the legacy require() behavior to avoid changing business logic.
         require('./models/Job.Model');
+        console.log('✅ Job model initialized (legacy)');
+
         require('./models/Interview.Model');
+        console.log('✅ Interview model initialized (legacy)');
+
         require('./models/Document.Model');
+        console.log('✅ Document model initialized (legacy)');
+
         require('./models/AI-JD.Model');
+        console.log('✅ AI-JD model initialized (legacy)');
+
+        // Dashboard model has no init* export; keep legacy behavior.
+        require('./models/Dashboard.Model');
+
+
         console.log('✅ All models initialized');
+
+
         
         // Now sync database with all models
         await sequelize.sync({ alter: true });
@@ -126,7 +148,16 @@ async function startServer() {
     app.use("/api/aijd", aijdRoutes);
     app.use("/api/document", documentRoutes);
     app.use("/api/dashboard", dashboardRoutes);
-    
+
+    // Root endpoint
+    app.get("/", (req, res) => {
+        res.status(200).json({
+            status: "Y",
+            message: "ATS Backend is running",
+            timestamp: new Date().toISOString()
+        });
+    });
+
     // Health check endpoint
     app.get("/health", (req, res) => {
         res.status(200).json({
@@ -138,10 +169,11 @@ async function startServer() {
         });
     });
 
-    / Error handling middleware
+    // Error handling middleware (must be last)
     const { errorHandler, notFoundHandler } = require("./middleware/error.middleware");
     app.use(notFoundHandler);
     app.use(errorHandler);
+
 
     // Seed default users if using SQLite (only in development)
     if (dbInitialized && !process.env.DB_PASSWORD) {
