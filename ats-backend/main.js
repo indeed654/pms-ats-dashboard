@@ -58,9 +58,27 @@ async function startServer() {
         console.log('==========================================');
         
     } catch (error) {
-        console.error('❌ Database initialization failed:', error.message);
-        console.log('⚠️  Server starting without database connection.');
+    console.error("====================================");
+    console.error("❌ DATABASE INITIALIZATION FAILED");
+    console.error(error);
+
+    if (error.errors) {
+        console.error("Validation Errors:");
+
+        error.errors.forEach((e) => {
+            console.error({
+                message: e.message,
+                path: e.path,
+                value: e.value,
+                validator: e.validatorKey,
+                type: e.type
+            });
+        });
     }
+
+    console.error("====================================");
+    console.log("⚠️ Server starting without database connection.");
+}
 
     // Security middleware
     app.use(helmet());
